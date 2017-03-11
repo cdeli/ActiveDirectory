@@ -8,6 +8,7 @@
 #
 # % = ForEach-Object
 # ? = Where-Object
+Import-Module ActiveDirectory
 
 $GroupOU = # Remove this comment and add the pathing for the group OU(s) in your structre (OU=Groups,DC=Contoso,DC=com)
 

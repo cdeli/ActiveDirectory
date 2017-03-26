@@ -9,6 +9,10 @@
 # Version: 1.1                          #
 #########################################
 
+# Import active directory in order ot pull list of "new"
+Import-Module ActiveDirectory
+
+# Define the date, $week defines 7 days prior. $Today defines the current day/time.
 $week = (Get-Date).AddDays(-7)
 $today = (Get-Date).ToString()
 
@@ -22,10 +26,7 @@ $smtp = "mail.contoso.com"
 $port = "587"
 $to = "to@contoso.com"
 $from = "from@contoso.com"
-$subject = "New Users and New Groups created this week"
-
-# Import active directory in order ot pull list of "new"
-Import-Module ActiveDirectory
+$subject = "New Users and New Groups created since $week"
 
 # Run report on users created in the last week
 $Users = Get-ADUser -Filter * -Properties * | Where-Object { $_.whenCreated -ge $week } | Sort-Object | `

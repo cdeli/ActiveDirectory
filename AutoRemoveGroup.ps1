@@ -12,10 +12,14 @@ Import-Module ActiveDirectory
 
 $GroupOU = # Remove this comment and add the pathing for the group OU(s) in your structre (OU=Groups,DC=Contoso,DC=com)
 
-Get-ADGroup -Filter 'GroupCategory -eq "Security" -or GroupCategory -eq "Distribution"' -SearchBase $searchOU | %{{ $group = $_}
-	Get-ADGroupMember -Identity $group -Recursive | %{Get-ADUser -Identity $_.distinguishedName -Properties Enabled | ?{$_.Enabled -eq $false}} | %{-Object{ $user = $_}
-		$UserName = $user.Name
-		$GroupName = $group.Name
+Get-ADGroup -Filter 'GroupCategory -eq "Security" -or GroupCategory -eq "Distribution"' -SearchBase $searchOU | 
+	ForEach-Object{{ $group = $_}
+	Get-ADGroupMember -Identity $group -Recursive | 
+	ForEach-Object { 
+		Get-ADUser -Identity $_.distinguishedName -Properties Enabled | Where-Object {$_.Enabled -eq $false}} | 
+		ForEach-Object {-Object{ $user = $_}
+			$UserName = $user.Name
+			$GroupName = $group.Name
 		Remove-ADGroupMember -Identity $group -Member $user -Confirm:$false
 	}
 }
